@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SqueekScope — Squeekchain Sepolia Portfolio &amp; Staking Checker</title>
+<meta name="description" content="A community tool for Squeekchain (Sepolia): look up any address to see its Squeek NFTs, staking power, staked SQK and claimable rewards, read live from the Squeekchain contracts and public API.">
+<style>
+  :root{--bg:#0d0f14;--panel:#161a22;--line:#262c3a;--txt:#e8ecf3;--dim:#9aa5b5;--acc:#ffb02e;--grn:#3ddc84;--blu:#57a7ff}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+  header{padding:28px 20px 8px;max-width:920px;margin:0 auto}
+  h1{font-size:28px;margin:0 0 6px} h1 .ham{color:var(--acc)}
+  .sub{color:var(--dim);margin:0 0 18px;line-height:1.5}
+  main{max-width:920px;margin:0 auto;padding:0 20px 40px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0 22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card small{display:block;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin-bottom:6px}
+  .card strong{font-size:20px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  input{flex:1;min-width:260px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px 14px;font-size:15px}
+  button{background:var(--acc);border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:15px;cursor:pointer}
+  button:disabled{opacity:.5;cursor:wait}
+  .note{color:var(--dim);font-size:13px;line-height:1.55}
+  .err{color:#ff7a7a}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;font-size:14px}
+  th{color:var(--dim);font-weight:600}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:2px 4px 2px 0;font-size:13px}
+  a{color:var(--blu)} footer{max-width:920px;margin:0 auto;padding:0 20px 36px;color:var(--dim);font-size:13px;line-height:1.6}
+  .ok{color:var(--grn)}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="ham">🐹</span> SqueekScope</h1>
+  <p class="sub">A community-built checker for <strong>Squeekchain</strong> on Sepolia testnet. Look up any address to see its Squeek NFTs,
+  staking power, staked SQK and claimable rewards — read live from the official Squeekchain staking contract, the Squeek collection,
+  and the public Squeekchain economy API. No wallet connection, no signing: read-only.</p>
+</header>
+<main>
+  <section class="grid" id="stats">
+    <div class="card"><small>Staking status</small><strong id="st-status">…</strong></div>
+    <div class="card"><small>Current round</small><strong id="st-round">…</strong></div>
+    <div class="card"><small>Total NFT power</small><strong id="st-power">…</strong></div>
+    <div class="card"><small>SQK staked (protocol)</small><strong id="st-sqk">…</strong></div>
+  </section>
+
+  <h2>Check an address</h2>
+  <div class="bar">
+    <input id="addr" placeholder="0x… Sepolia address" spellcheck="false">
+    <button id="go">Look up</button>
+  </div>
+  <p class="note">Tip: try the address that claimed Squeek #2508, or any address from the
+  <a href="https://sepolia.squeekchain.com/status" target="_blank" rel="noopener">official console</a>.</p>
+  <div id="result"></div>
+
+  <h2 style="margin-top:30px">Check one Squeek</h2>
+  <div class="bar">
+    <input id="tid" placeholder="Token ID, e.g. 2508" inputmode="numeric" style="flex:0 1 220px;min-width:180px">
+    <button id="go2">Check token</button>
+  </div>
+  <div id="tokenResult"></div>
+</main>
+<footer>
+  <p>SqueekScope is an independent community tool for the Squeekchain Sepolia testnet. It is not affiliated with Squeekchain Technologies.
+  Data sources: SqueekStaking <span id="ft-stk"></span>, Squeek collection <span id="ft-col"></span>, official SQK token <span id="ft-sqk"></span>
+  (all on Ethereum Sepolia, chain 11155111), the public economy API at api.squeekchain.com, and Blockscout for NFT enumeration.
+  Official console: <a href="https://sepolia.squeekchain.com/" target="_blank" rel="noopener">sepolia.squeekchain.com</a>.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
