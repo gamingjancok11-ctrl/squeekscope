@@ -151,6 +151,38 @@ async function lookupToken() {
   $("go2").disabled = false;
 }
 
+// ---------- merge planner ----------
+// Official protocol tables (economy state, nft.basePower / nft.cooldownBlocks).
+const BASE_POWER = [1000, 2200, 4840, 10648, 23426, 51536, 113380, 249436, 548759, 1207269];
+const COOLDOWN_BLOCKS = [0, 3000, 7000, 14000, 21000, 28000, 35000, 42000, 49000, 0];
+function planMerge() {
+  const a = Number($("lvlA").value), b = Number($("lvlB").value);
+  const box = $("mergeResult");
+  if (a !== b) { box.innerHTML = '<p class="err">Merges need two Squeeks of the SAME level — these two would be rejected by the contract.</p>'; return; }
+  if (a >= 10) { box.innerHTML = '<p class="note">Level 10 is terminal: no further merge is possible.</p>'; return; }
+  const before = 2 * BASE_POWER[a - 1];
+  const after = BASE_POWER[a]; // level a+1
+  const gain = (((after - before) / before) * 100).toFixed(1);
+  const cd = COOLDOWN_BLOCKS[a]; // cooldown that applies at the new level (index = new level - 1)
+  const hours = (cd * 12 / 3600).toFixed(1);
+  box.innerHTML = `<table>
+    <tr><th>Survivor becomes</th><td>Level ${a + 1} (donor Squeek is burned)</td></tr>
+    <tr><th>Power before</th><td>${before.toLocaleString("en-US")} (2 × Level ${a})</td></tr>
+    <tr><th>Power after</th><td>${after.toLocaleString("en-US")} (${gain}% vs. holding both)</td></tr>
+    <tr><th>Next merge cooldown</th><td>${cd.toLocaleString("en-US")} blocks (≈ ${hours} hours at 12s/block)</td></tr>
+  </table>
+  <p class="note">Merging is done from the official Portfolio page; both Squeeks must be in the same custody (both in wallet or both deposited).</p>`;
+}
+for (const id of ["lvlA", "lvlB"]) {
+  const sel = $(id);
+  for (let L = 1; L <= 10; L++) {
+    const o = document.createElement("option");
+    o.value = L; o.textContent = "Level " + L;
+    sel.appendChild(o);
+  }
+}
+$("go3").addEventListener("click", planMerge);
+
 $("ft-stk").textContent = short(STAKING);
 $("ft-col").textContent = short(COLLECTION);
 $("ft-sqk").textContent = short(SQK);
